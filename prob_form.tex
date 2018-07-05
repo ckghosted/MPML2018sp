@@ -1,0 +1,17 @@
+\section{Problem Formulation}
+In this section, we formally state the domain adaptation problem.
+
+Domain set: $\mathcal{X}$
+
+Distribution on $\mathcal{X}$ for two domains: $\DS$, $\DT$
+
+Labeling function for two domains: $f_S$, $f_T$: $\mathcal{X} \rightarrow [0, 1]$
+
+Hypothesis Set: $\mathcal{H}=\{h:\mathcal{X} \rightarrow \{0,1\}\}$
+Throughout this report, we assume the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set.
+
+Disagreement (risk) for two domains:
+$$\RiskS(h) \triangleq \RiskS(h, f_S) = \expect{X \sim \DS}{\abs{h(X) - f_S(X)}}$$
+$$\RiskT(h) \triangleq \RiskT(h, f_T) = \expect{X \sim \DS}{\abs{h(X) - f_T(X)}}$$
+
+The goal: To minimize the risk of the testing data drawn from a target domain under the model trained on data drawn from a source domain.

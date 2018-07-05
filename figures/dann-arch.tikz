@@ -1,0 +1,14 @@
+  \begin{tikzpicture}
+    \node (x) {$X$};
+    \node[rectangle, draw, text width=1.5cm, text centered, right=1.5cm of x] (gf) {$\color{violet} G_f$};
+    \node[rectangle, draw, text width=1.5cm, text centered, below right=0.5cm and 1.5cm of gf] (gd) {$\color{red} G_d$};
+    \node[rectangle, draw, text width=1.5cm, text centered, above right=0.5cm and 1.5cm of gf] (gy) {$\color{blue} G_y$};
+    \node[right=2cm of gd] (d) {$\{ \DS, \DT \}$};
+    \node[right=2cm of gy] (y) {$Y$};    
+    % \draw (7,5) rectangle (9, 6) node[pos=.5] {$G_y$};
+    \path [draw, -latex'] (x) -- (gf);
+    \path [draw, -latex'] (gf.east) -- (gy.west);
+    \path [draw, -latex'] (gf.east) -- (gd.west);
+    \path [draw, -latex'] (gy) -- (y);
+    \path [draw, -latex'] (gd) -- (d);
+  \end{tikzpicture}

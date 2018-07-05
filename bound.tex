@@ -1,0 +1,102 @@
+\section{Theoretical Guarantee}
+In this section, we state the main theorem and some key lemmas given in \cite{BenDavid2006} and \cite{BenDavid2010} used to establish the theoretical upper bound on the true target risk in the domain adaptation problem.
+
+\subsection{Upper Bound on Target Risk}
+\begin{theorem}[Upper Bound on Target Risk]\label{thm:A}
+  Let $\mathcal{H}$ be a symmetric hypothesis set with VC dimension $d$, and let $\US$ and $\UT$ denote the samples of size $m$ drawn i.i.d. from the source and target distributions, respectively. Then, for any $\delta \in (0,1)$, with probability at least $1-\delta$ (over the choice of the samples), for every $h \in \mathcal{H}$, we have
+  \begin{equation}\label{eq:A}
+    \RiskT(h) \leq \RiskS(h) + \frac{1}{2} \EDHDH(\US, \UT) + 4 \sqrt{\frac{2d \log{2m} + \log{\frac{2}{\delta}}}{m}} + \epsilon^{*},
+  \end{equation}
+  where $\epsilon^{*} = \RiskS(h^*) + \RiskT(h^*)$ and $h^* = \argmin_{h \in \mathcal{H}} \RiskS(h) + \RiskT(h)$.
+\end{theorem}
+
+The bound in Theorem \ref{thm:A} is related to the optimal combined error $\epsilon^{*}$ and the corresponding optimal classifier $h^*$ in the hypothesis set. When the optimal combined error is large, it means that there is no classifier that performs well on both source and target domains, and hence it is generally impractical to seek to a good target hypothesis by training only on the source domain. As a result, it is often assumed in the literature that $\epsilon^{*}$ is small, which is the case in most domain adaptation problems with reasonable representation function $\mathcal{R}$.
+
+To prove Theorem \ref{thm:A}, we need the following lemmas.
+
+\begin{lemma}[Triangle Inequality]\label{lem:triangle}
+  For any labeling functions $f_1$, $f_2$, and $f_3$, we have
+  \begin{equation}\label{eq:triangle}
+    \epsilon(f_1,f_2) \leq \epsilon(f_1,f_3) + \epsilon(f_2,f_3).
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  By definition,
+  \begin{align}
+    \epsilon(f_1, f_2)
+    =   & \expect{X}{\abs{f_1(X)-f_2(X)}} \label{eq:triangle_1}\\
+    \leq& \expect{X}{\abs{f_1(X)-f_3(X)} + \abs{f_2(X)-f_3(X)} } \label{eq:triangle_2}\\
+    =   & \expect{X}{\abs{f_1(X)-f_3(X)}} + \expect{X}{\abs{f_2(X)-f_3(X)}} \label{eq:triangle_3}\\
+    =   & \epsilon(f_1, f_3) + \epsilon(f_2, f_3). \label{eq:triangle_4}
+  \end{align}
+\end{proof}
+
+\begin{lemma}[Hypothesis Error Bound]\label{lem:h_bound}
+  For any hypotheses $h, h' \in \mathcal{H}$, we have
+  \begin{equation}\label{eq:h_bound}
+    \vert \RiskS(h,h') - \RiskT(h,h') \vert
+    \leq
+    \frac{1}{2} \DHDH(\DS,\DT).
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  \begin{align}
+    \DHDH(\DS, \DT)
+    =& 2 \sup_{h \in \HDH} \abs{P_{X \sim \DS}(I[h(X)]) - P_{X \sim \DT}(I[h(X)])} \label{eq:h_bound_1}\\
+    =& 2 \sup_{h, h' \in \mathcal{H}} \abs{P_{X \sim \DS}(I[h(X) \ne h'(X)]) - P_{X \sim \DT}(I[h(X) \ne h'(X)])} \label{eq:h_bound_2}\\
+    =& 2 \sup_{h, h' \in \mathcal{H}} \abs{\RiskS(h, h') - \RiskT(h, h')} \label{eq:h_bound_3}\\
+    \geq& 2 \abs{\RiskS(h, h') - \RiskT(h, h')}. \label{eq:h_bound_4}
+  \end{align}
+\end{proof}
+
+\begin{lemma}[Uniform Convergence of $\HDH$-divergence]\label{lem:unif_conv_h}
+  Let $\mathcal{H}$ be a hypothesis set on $\mathcal{X}$ with VC dimension $d$, and let $\US$ and $\UT$ be samples of size $m$ drawn i.i.d. from $\DS$ and $\DT$, respectively. Then, for any $\delta \in (0,1)$, with probability at least $1-\delta$, we have
+  \begin{equation}\label{eq:unif_conv_h}
+    \DHDH(\DS, \DT)
+    \leq
+    \EDHDH(\US, \UT)
+    +
+    4 \sqrt{\frac{2d \log{2m} + \log{\frac{2}{\delta}}}{m}}.
+  \end{equation}
+\end{lemma}
+\begin{proof}
+\end{proof}
+
+We can now prove Theorem \ref{thm:A} as follows.
+
+\begin{proof}[Proof of Theorem \ref{thm:A}]
+  \begin{align}
+     \RiskT(h) 
+    =& \RiskT(h, f_T) \label{eq:A_1}\\
+    \leq& \RiskT(h^*, f_T) + \RiskT(h, h^*) \label{eq:A_2}\\
+    \leq& \RiskT(h^*, f_T) + \RiskS(h, h^*) + \abs{\RiskT(h, h^*) - \RiskS(h, h^*)} \label{eq:A_3}\\
+    \leq& \RiskT(h^*, f_T) + \RiskS(h, h^*) + \frac{1}{2} \DHDH(\DS, \DT) \label{eq:A_4}\\
+    \leq& \RiskT(h^*, f_T) + \RiskS(h, f_S) + \RiskS(h^*, f_S) + \frac{1}{2} \DHDH(\DS, \DT) \label{eq:A_5}\\
+    =   & \RiskS(h, f_T) + \epsilon^* + \frac{1}{2} \DHDH(\DS, \DT) \text{\quad (by definition)} \label{eq:A_6}\\
+    \leq& \RiskS(h, f_T) + \epsilon^* + \frac{1}{2} \EDHDH(\US, \UT)
+          + 4 \sqrt{\frac{2d \log(2m) + \log(\frac{2}{\delta})}{m}}, \label{eq:A_7}
+  \end{align}
+  where (\ref{eq:A_2}) and (\ref{eq:A_5}) are by Lemma \ref{lem:triangle}, (\ref{eq:A_4}) is by Lemma \ref{lem:h_bound}, and (\ref{eq:A_7}) is by Lemma \ref{lem:unif_conv_h}.
+\end{proof}
+
+To further bound the true source risk by its empirical version, let $m'$ denotes the size of \textit{labeled} data drawn i.i.d. from the source domain. Then, by applying the VC bound, for any $\delta \in (0,1)$, with probability at least $1 - \delta$, we have
+\begin{equation}\label{eq:risk_s_vc}
+  \RiskS(h) \leq \ERiskS(h) + \sqrt{\frac{4}{m'}\left( d \log \frac{2em'}{d} + \log \frac{4}{\delta} \right)}.
+\end{equation}
+
+By plugging-in (\ref{eq:risk_s_vc}) into Theorem \ref{thm:A}, we obtain the following corollary.
+
+\begin{corollary}\label{thm:B}
+  For any $\delta \in (0,1)$, with probability at least $1 - \delta$, we have
+  \begin{equation}\label{eq:B}
+    \begin{aligned}
+      \RiskT(h) \leq&
+      \ERiskS(h) + \sqrt{\frac{4}{m'}\left( d \log \frac{2em'}{d} + \log \frac{4}{\delta} \right)} \\
+      & + \frac{1}{2} \EDHDH(\US, \UT)
+      + 4 \sqrt{\frac{2d \log(2m) + \log(\frac{2}{\delta})}{m}} 
+      + \epsilon^*
+    \end{aligned}
+  \end{equation}
+\end{corollary}
+
+We can focus on the first term $\ERiskS(h)$ and the third term $\frac{1}{2} \EDHDH(\US, \UT)$, with the former being the empirical source risk and the latter being the empirical divergence between the source and target domains. Ideally, we want both terms to be small after training. However, it turns out that we can only trying to minimize a tradeoff between them, as pointed out first by \cite{BenDavid2006} and implemented by \cite{Ganin2016}.

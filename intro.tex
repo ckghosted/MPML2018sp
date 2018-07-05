@@ -1,0 +1,8 @@
+\section{Introduction}
+In the basic setting of PAC learning framework discussed in Lecture 1, 2, and 3, it is assumed that the training and testing data are drawn i.i.d. from the same distribution $P$. Under this basic setting, we can derive generalization performance guarantees of \textit{empirical risk minimization} (ERM) learning rule by developing several upper bounds on the estimation errors (or their tail probabilities), as well as the corresponding sample complexities.
+
+In a more practical setting, however, training and testing data come from different \textit{domains}, namely, different data distributions. In the \textit{domain adaptation} problems, one faces machine learning tasks where there are many labeled training data from a \textit{source} domain, and little or no labeled testing data from a \textit{target} domain. For example, ...
+
+Under this general setting, one fundamental question arises: "Is it possible to use training data from a source domain to learn a classifier which performs well on a target domain?" Intuitively, for effective domain transfer to be achieved, the features extracted from both training and testing data must be as indistinguishable as possible between source and target domains. In this report, we will introduce the theoretical upper bound on the true target risk established in the literature, which formalizes the above intuition theoretically. Based on these theoretical principles, we then introduce the domain-adversarial neural network (DANN) that implements this idea in the context of neural network architectures and shows decent empirical results in many domain adaptation problems.
+
+The rest of the report is organized as follows...

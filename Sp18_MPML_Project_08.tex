@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage{./reportNTU}
+%\input{./macro_ihwang.tex}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows}
+
+\pagestyle{plain}
+
+ 
+\rhead{}
+\lhead{}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+
+% macros
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}}
+%\newcommand{\mathbbm}[1]{\text{\textbf{#1}}} % from mathbbm.sty
+\newcommand{\norm}[2]{\left\lVert#2\right\rVert_{#1}}
+\newcommand{\expect}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\derivative}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\inprod}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\Abs}[1]{\left \lVert {#1} \right \rVert}
+\newcommand{\HDH}[0]{\mathcal{H} \Delta \mathcal{H}}
+\newcommand{\DHDH}[0]{d_{\mathcal{H} \Delta \mathcal{H}}}
+\newcommand{\EDHDH}[0]{\hat{d}_{\mathcal{H} \Delta \mathcal{H}}}
+% \newcommand{\RiskT}[0]{R_{\mathcal{D}_T}}
+% \newcommand{\RiskS}[0]{R_{\mathcal{D}_S}}
+% \newcommand{\ERiskT}[0]{\hat{R}_{\mathcal{D}_T}}
+% \newcommand{\ERiskS}[0]{\hat{R}_{\mathcal{D}_S}}
+\newcommand{\RiskT}[0]{\epsilon_{T}}
+\newcommand{\RiskS}[0]{\epsilon_{S}}
+\newcommand{\ERiskT}[0]{\hat{\epsilon}_{T}}
+\newcommand{\ERiskS}[0]{\hat{\epsilon}_{S}}
+\newcommand{\DS}[0]{\mathcal{D}_S}
+\newcommand{\DT}[0]{\mathcal{D}_T}
+\newcommand{\tDS}[0]{\tilde{\mathcal{D}}_S}
+\newcommand{\tDT}[0]{\tilde{\mathcal{D}}_T}
+\newcommand{\US}[0]{\mathcal{U}_S}
+\newcommand{\UT}[0]{\mathcal{U}_T}
+
+\title{Title}
+\author{Names}
+\date{Student ID}
+\begin{document}
+\maketitle
+
+\thispagestyle{plain}
+
+\begin{abstract}
+In this project, we focus on the problem of \textit{domain adaptation}, one of the transfer learning problems with the setting in which there are many labeled training data from a source domain, but no labeled testing data from a target domain. Specifically, we will formally state the domain adaptation problem and introduce the theoretical upper bound on the true target risk established in the literature. The upper bound is stated in terms of the source risk and a classifier-induced divergence measure between the training (source) and testing (target) domains, which formalizes the intuition that a good feature representation for cross-domain transfer must be discriminative for the main learning task on the source domain, while at the same time be indiscriminate with respect to the shift between the two domains. Based on the above theoretical principles, we then introduce the domain-adversarial neural network (DANN) that implements this idea in the context of neural network architectures and shows decent empirical results in many domain adaptation problems.
+\end{abstract}
+
+\input{./intro}
+\input{./prob_form}
+\input{./divergence}
+\input{./bound}
+\input{./dann}
+\input{./conclusion}
+
+\bibliographystyle{ieeetr}
+\bibliography{Ref}
+
+
+\end{document}
