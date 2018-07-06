@@ -26,6 +26,7 @@ respectively. Finally, the \textit{empirical risk} of a hypothesis $h$, which is
 
 The goal of the learning algorithm is to find a good hypothesis $h \in \mathcal{H}$ with a low target risk $\RiskT(h)$ based on the labeled data from the source domain and unlabeled data on the target domain. In this report, we will show that the target risk $\RiskT(h)$ has a theoretical upper bound in terms of the source risk and a distance measure between the source and target domains, which will be introduced in the next section.
 
+As mentioned in Section \ref{sect:intro}, for effective domain transfer to be achieved, the key is the extracted features. Hence, we further assume that there is a \textit{representation function} $\mathcal{R}$ to be learned that maps the \textit{raw} input data from the \textit{raw} data space, say, $\mathcal{Z}$, into a feature space $\mathcal{X}$. That is, $\mathcal{R}: \mathcal{Z} \rightarrow \mathcal{X}$. By doing so, the notations of mentioned above will not be effected. We will discuss more about the representation function $\mathcal{R}$ in Section \ref{sect:dann}.
 
 % \begin{itemize}
 % \item \textbf{Data space:} $\mathcal{X} \times \mathcal{Y}$.
