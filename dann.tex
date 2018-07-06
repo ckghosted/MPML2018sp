@@ -1,4 +1,4 @@
-\section{Empirical Results}
+\section{Empirical Results}\label{sect:dann}
 In this section, we introduce the domain-adversarial neural network (DANN) proposed by Ganin et al. \cite{Ganin2016}, \cite{Ganin2015} and Ajakan et al. \cite{Ajakan2014}.
 
 \subsection{Model Architecture}\label{sub:model_arch}
@@ -67,12 +67,12 @@ where in (\ref{eq:domain_loss_I}) we have assumed that the unlabeled datasets ha
 = & \argmin_{\theta_d} \hat{L}_{d}(X, D; \theta_f, \theta_d) \label{eq:argmin_theta_d}\\
 = & \argmin_{\theta_d} \left[ \frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=1}I[\mathbf{z} \in \TUS]+\frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=0}I[\mathbf{z} \in \TUT] \right]. \label{eq:argmin_theta_d_I}
 \end{align}
-Also, the minimizer $\hat{\theta}_f$ for (\ref{eq:obj_argmin}) is actually the maximizer for $\hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)$, for a fixed $\hat{\theta}_d$. We thus have
+Also, the minimizer $\hat{\theta}_f$ for (\ref{eq:obj_argmin}) is actually the maximizer for $\hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)$ for a fixed $\hat{\theta}_d$. We thus have
 \begin{align}
 \max_{\theta_f}{\hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)}
 =& \min_{\theta_f}{- \hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)} \label{eq:min_theta_f}\\
 =& \min_{\theta_f} 2 \left( 1 - \frac{1}{m} \min_{\theta_d} \left[ \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=1}I[\mathbf{z} \in \TUS]+ \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=0}I[\mathbf{z} \in \TUT] \right] \right) \label{eq:min_theta_f_I}\\
-=& \argmin_{\theta_f} \hat{d}_{\mathcal{H}_d}(\TUS, \TUT) \label{eq:min_theta_f_EDHDH},
+=& \min_{\theta_f} \hat{d}_{\mathcal{H}_d}(\TUS, \TUT) \label{eq:min_theta_f_EDHDH},
 \end{align}
 where (\ref{eq:min_theta_f_I}) is by (\ref{eq:argmin_theta_d_I}), and (\ref{eq:min_theta_f_EDHDH}) is by Lemma \ref{lem:emp_h_divergence} with $\mathcal{H}_d$ being the hypothesis set for the domain classifier $G_d$.
 

@@ -1,17 +1,32 @@
-\section{Problem Formulation}
-In this section, we formally state the domain adaptation problem.
+\section{Problem Formulation}\label{sect:prob_form}
+In this section, we formally state the domain adaptation problem. Let $\mathcal{X}$ denotes the input data space and $\mathcal{Y}$ the label space. The term \textit{domain} used in this report is defined as a pair consisting of a distribution $\mathcal{D}^X$ over $\mathcal{X}$ and a labeling function $f: \mathcal{X} \rightarrow \mathcal{Y}$. We consider two domains, a \textit{source} domain: $\DS \equiv \langle \mathcal{D}^X_S, f_S \rangle$, and a \textit{target} domain: $\DT \equiv \langle \mathcal{D}^X_T, f_T \rangle$.
 
-Domain set: $\mathcal{X}$
+In a typical domain adaptation problem, the training data consist of a set of \textit{labeled} data sampled from the source domain, and a set of \textit{unlabeled} data sampled from the target domain, which can be mathematicaly denoted as $((X_1,Y_1),(X_2,Y_2),...,(X_n,Y_n)) \sim (\DS)^{\otimes n}$ and $(X_{n+1},X_{n+2},...,X_N) \sim (\mathcal{D}^X_T)^{\otimes n'}$, respectively, with $N=n+n'$ being the total number of samples. Furthermore, we use $\US$ and $\UT$ to denote the set of (unlabeled) data $X_i$'s from the source and target domains, respectively.
 
-Distribution on $\mathcal{X}$ for two domains: $\DS$, $\DT$
+% A \textit{hypothesis set} is defined as $\mathcal{H}=\{h:\mathcal{X} \rightarrow \mathcal{Y}\}$.
 
-Labeling function for two domains: $f_S$, $f_T$: $\mathcal{X} \rightarrow [0, 1]$
+For theoretical reasons, we consider binary classification problems with label space $\mathcal{Y}=[0, 1]$, which can have fractional values when the labeling function (i.e., the \textit{black box}) is non-deterministic. In this case, the \textit{hypothesis set} is defined as $\mathcal{H} \subseteq \{h:\mathcal{X} \rightarrow \{0,1\}\}$. Throughout this report, we consider the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set. Also, the loss function $\ell: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ is simply defined as $\ell (\hat{y},y) \triangleq I \left[ \hat{y} \neq y \right]$, with $I[.]$ being the binary indicator variable which is $1$ if the statement is true. Hence, the \textit{statistical risk} can be defined as
+\begin{align}
+\RiskS(h) \triangleq \RiskS(h, f_S) = & \expect{\DS^X}{\abs{h(X) - f_S(X)}}, \label{eq:RiskS}\\
+\RiskT(h) \triangleq \RiskT(h, f_T) = & \expect{\DT^X}{\abs{h(X) - f_T(X)}}, \label{eq:RiskT}
+\end{align}
+Accordingly, the \textit{empirical risk}, which is valid only for the source domain, can be defined as
+\begin{equation}\label{eq:ERiskS}
+\ERiskS(h) \triangleq \frac{1}{n} \sum_{i=1}^{n} \abs{h(X_i) - Y_i}.
+\end{equation}
 
-Hypothesis Set: $\mathcal{H}=\{h:\mathcal{X} \rightarrow \{0,1\}\}$
-Throughout this report, we assume the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set.
+The goal of the learning algorithm is to find a good hypothesis $h \in \mathcal{H}$ with a low target risk $\RiskT(h)$ based on the labeled data from the source domain and unlabeled data on the target domain.
 
-Disagreement (risk) for two domains:
-$$\RiskS(h) \triangleq \RiskS(h, f_S) = \expect{X \sim \DS}{\abs{h(X) - f_S(X)}}$$
-$$\RiskT(h) \triangleq \RiskT(h, f_T) = \expect{X \sim \DS}{\abs{h(X) - f_T(X)}}$$
 
-The goal: To minimize the risk of the testing data drawn from a target domain under the model trained on data drawn from a source domain.
+% \begin{itemize}
+% \item \textbf{Data space:} $\mathcal{X} \times \mathcal{Y}$.
+% \item \textbf{Testing data:} $(X,Y)$, where $X \sim \DT$ with $\DT$ being the target distribution over $\mathcal{X}$, and 
+
+% \item \textbf{Data Distribution on} $\mathcal{X}$ \textbf{for two domains:} $\DS$, $\DT$
+% \item Labeling function for two domains: $f_S$, $f_T$: $\mathcal{X} \rightarrow [0, 1]$
+% \item Hypothesis Set: $\mathcal{H}=\{h:\mathcal{X} \rightarrow \{0,1\}\}$. Throughout this report, we consider the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set.
+% \item Disagreement (risk) for two domains:
+% $$\RiskS(h) \triangleq \RiskS(h, f_S) = \expect{X \sim \DS}{\abs{h(X) - f_S(X)}}$$
+% $$\RiskT(h) \triangleq \RiskT(h, f_T) = \expect{X \sim \DS}{\abs{h(X) - f_T(X)}}$$
+% \item Goal: To minimize the risk of the testing data drawn from a target domain under the model trained on data drawn from a source domain.
+% \end{itemize}
