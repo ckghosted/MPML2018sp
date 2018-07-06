@@ -1,21 +1,30 @@
 \section{Problem Formulation}\label{sect:prob_form}
-In this section, we formally state the domain adaptation problem. Let $\mathcal{X}$ denotes the input data space and $\mathcal{Y}$ the label space. The term \textit{domain} used in this report is defined as a pair consisting of a distribution $\mathcal{D}^X$ over $\mathcal{X}$ and a labeling function $f: \mathcal{X} \rightarrow \mathcal{Y}$. We consider two domains, a \textit{source} domain: $\DS \equiv \langle \mathcal{D}^X_S, f_S \rangle$, and a \textit{target} domain: $\DT \equiv \langle \mathcal{D}^X_T, f_T \rangle$.
+In this section, we formally state the domain adaptation problem. Let $\mathcal{X}$ denotes the input data space and $\mathcal{Y}$ the label space. The term \textit{domain} used in this report is defined as a pair of a distribution $\mathcal{D}^X$ over $\mathcal{X}$ and a labeling function $f: \mathcal{X} \rightarrow \mathcal{Y}$. We consider two domains, a \textit{source} domain: $\DS \equiv \langle \mathcal{D}^X_S, f_S \rangle$, and a \textit{target} domain: $\DT \equiv \langle \mathcal{D}^X_T, f_T \rangle$.
 
 In a typical domain adaptation problem, the training data consist of a set of \textit{labeled} data sampled from the source domain, and a set of \textit{unlabeled} data sampled from the target domain, which can be mathematicaly denoted as $((X_1,Y_1),(X_2,Y_2),...,(X_n,Y_n)) \sim (\DS)^{\otimes n}$ and $(X_{n+1},X_{n+2},...,X_N) \sim (\mathcal{D}^X_T)^{\otimes n'}$, respectively, with $N=n+n'$ being the total number of samples. Furthermore, we use $\US$ and $\UT$ to denote the set of (unlabeled) data $X_i$'s from the source and target domains, respectively.
 
 % A \textit{hypothesis set} is defined as $\mathcal{H}=\{h:\mathcal{X} \rightarrow \mathcal{Y}\}$.
 
-For theoretical reasons, we consider binary classification problems with label space $\mathcal{Y}=[0, 1]$, which can have fractional values when the labeling function (i.e., the \textit{black box}) is non-deterministic. In this case, the \textit{hypothesis set} is defined as $\mathcal{H} \subseteq \{h:\mathcal{X} \rightarrow \{0,1\}\}$. Throughout this report, we consider the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set. Also, the loss function $\ell: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ is simply defined as $\ell (\hat{y},y) \triangleq I \left[ \hat{y} \neq y \right]$, with $I[.]$ being the binary indicator variable which is $1$ if the statement is true. Hence, the \textit{statistical risk} can be defined as
-\begin{align}
-\RiskS(h) \triangleq \RiskS(h, f_S) = & \expect{\DS^X}{\abs{h(X) - f_S(X)}}, \label{eq:RiskS}\\
-\RiskT(h) \triangleq \RiskT(h, f_T) = & \expect{\DT^X}{\abs{h(X) - f_T(X)}}, \label{eq:RiskT}
-\end{align}
-Accordingly, the \textit{empirical risk}, which is valid only for the source domain, can be defined as
+For simplicity, we consider binary classification problems with label space $\mathcal{Y}=[0, 1]$, which can have fractional values when the labeling function (i.e., the \textit{black box}) is non-deterministic. In this case, the \textit{hypothesis set} is defined as $\mathcal{H} \subseteq \{h:\mathcal{X} \rightarrow \{0,1\}\}$. Throughout this report, we consider the \textit{symmetric} hypothesis set, in which for every $h$, the inverse hypothsis $1-h$ is also in hypothesis set.
+
+Since $\mathcal{Y}=[0, 1]$, the loss function $\ell: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ is simply defined as $\ell (\hat{y},y) \triangleq I \left[ \hat{y} \neq y \right]$, with $I[.]$ being the binary indicator variable which is $1$ if the statement is true. Also, given a data distribution $\mathcal{D}^X$, the \textit{disagreement} between a hypothess $h$ and a labeling function $f$ (which can also be a hypothesis) is defined as
+\begin{equation}\label{eq:disagreement}
+\epsilon(h, f) \triangleq \expect{\mathcal{D}^X}{\abs{h(X) - f(X)}}
+\end{equation}
+Accordingly, the \textit{statistical risk} of a hypothesis $h$ in the source and target domains can be defined as
+\begin{equation}\label{eq:RiskS}
+\RiskS(h) \triangleq \RiskS(h, f_S) = \expect{\DS^X}{\abs{h(X) - f_S(X)}}
+\end{equation}
+and
+\begin{equation}\label{eq:RiskT}
+\RiskT(h) \triangleq \RiskT(h, f_T) = \expect{\DT^X}{\abs{h(X) - f_T(X)}},
+\end{equation}
+respectively. Finally, the \textit{empirical risk} of a hypothesis $h$, which is valid only for the source domain, can be defined as
 \begin{equation}\label{eq:ERiskS}
 \ERiskS(h) \triangleq \frac{1}{n} \sum_{i=1}^{n} \abs{h(X_i) - Y_i}.
 \end{equation}
 
-The goal of the learning algorithm is to find a good hypothesis $h \in \mathcal{H}$ with a low target risk $\RiskT(h)$ based on the labeled data from the source domain and unlabeled data on the target domain.
+The goal of the learning algorithm is to find a good hypothesis $h \in \mathcal{H}$ with a low target risk $\RiskT(h)$ based on the labeled data from the source domain and unlabeled data on the target domain. In this report, we will show that the target risk $\RiskT(h)$ has a theoretical upper bound in terms of the source risk and a distance measure between the source and target domains, which will be introduced in the next section.
 
 
 % \begin{itemize}
