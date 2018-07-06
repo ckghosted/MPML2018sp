@@ -1,12 +1,12 @@
 \section{Classifier-Induced Divergence Measure}\label{sect:divergence}
-In this section, we introduce the classifier-induced divergence measure widely used in the literature. In the following subsections, let $\mathcal{D}$ and $\mathcal{D}'$ denote two probability distributions over the same measure space $(\mathcal{X}, \mathcal{E})$, where $\mathcal{X}$ is the domain set and $\mathcal{E}$ is its measurable subsets under $\mathcal{D}$ and $\mathcal{D}'$.
+In this section, we introduce the classifier-induced divergence measure widely used in the literature. In the following subsections, let $\mathcal{D}$ and $\mathcal{D}'$ denote two probability distributions over the same measure space $(\mathcal{X}, \mathcal{E})$, where $\mathcal{X}$ is a sample space and $\mathcal{E}$ is its measurable subsets under $\mathcal{D}$ and $\mathcal{D}'$.
 
 \subsection{Total variation}
 The most natural measure of divergence between two distributions is the \textit{total variation} distance. The total variation between $\mathcal{D}$ and $\mathcal{D}'$ is defined as
 \begin{equation}\label{eq:total_var}
   d_{L_1}(\mathcal{D}, \mathcal{D}') \triangleq 2\sup_{E \in \mathcal{E}} \vert P_{\mathcal{D}}(E)-P_{\mathcal{D}'}(E) \vert.
 \end{equation}
-That is, the total variation measures the largest possible difference between the two probability distributions by considering all posible events.
+That is, the total variation measures the largest possible difference between the two probability distributions by considering \textit{all} posible events.
 
 However, the total variation is not very useful since it is too sensitive and inflates the bound unnecessary. Also, it is feasibly difficult to estimate the total variation between two distributions from finite samples they generate. As pointed out in \cite{Kifer2004}, it is often sufficient in practice to focus on a \textit{family} of significant domain subsets, which leads to the definitions in the following subsections.
 
@@ -15,47 +15,56 @@ Let $\mathcal{A}$ be a collection of measurable sets. The $\mathcal{A}$-distance
 \begin{equation}\label{eq:a_distance}
   d_{\mathcal{A}}(\mathcal{D}, \mathcal{D}') \triangleq 2\sup_{A \in \mathcal{A}} \vert P_{\mathcal{D}}(A)-P_{\mathcal{D}'}(A) \vert.
 \end{equation}
-Informally, the $\mathcal{A}$-distance is the largest possible difference between the two probability distributions by considering events that \textit{the user cares about}. For example, let the domain set be all the real numbers and $\mathcal{A}$ be the set of all one-sided intervals $(-\infty,x), x \in \mathbb{R}$. In this case, the $\mathcal{A}$-distance becomes the Kolmogorov-Smirnov statistic: $\sup_{x \in \mathbb{R}} \vert F_{\mathcal{D}}(x)-F_{\mathcal{D}'}(x) \vert$, with $F_{\mathcal{D}}$ and $F_{\mathcal{D'}}$ being cumulative distribution functions over $\mathcal{D}$ and $\mathcal{D}'$, respectively.
+Informally, the $\mathcal{A}$-distance is the largest possible difference between the two probability distributions by considering events that \textit{the user cares about}. For example, let the sample space be all the real numbers $\mathbb{R}$, and $\mathcal{A}$ be the set of all one-sided intervals $(-\infty,x), x \in \mathbb{R}$. In this case, the $\mathcal{A}$-distance becomes the Kolmogorov-Smirnov statistic: $\sup_{x \in \mathbb{R}} \vert F_{\mathcal{D}}(x)-F_{\mathcal{D}'}(x) \vert$, with $F_{\mathcal{D}}$ and $F_{\mathcal{D'}}$ being cumulative distribution functions of $\mathcal{D}$ and $\mathcal{D}'$, respectively.
 
 \subsection{$\mathcal{H}$-divergence}
-We can now define the \textit{classifier-induced divergence measure} based on the $\mathcal{A}$-distance. Given the hypothesis set $\mathcal{H}$, let $I(h) \triangleq \{ \mathbf{x} \vert h(\mathbf{x})=1 \}$ denote the subset of $\mathcal{X}$ induced by the characteristic function $h \in \mathcal{H}$. The $\mathcal{H}$-divergence between two distributions $\mathcal{D}$ and $\mathcal{D}'$ is defined as
+We can now define the \textit{classifier-induced divergence measure} based on the $\mathcal{A}$-distance. Given a binary hypothesis set $\mathcal{H} \subseteq \{h:\mathcal{X} \rightarrow \{0,1\}\}$, let $I(h) \triangleq \{ X \vert h(X)=1 \}$ denote the subset of $\mathcal{X}$ induced by the characteristic function $h \in \mathcal{H}$. The $\mathcal{H}$-divergence between two distributions $\mathcal{D}$ and $\mathcal{D}'$ is defined as
 \begin{equation}\label{eq:h_divergence}
   d_{\mathcal{H}}(\mathcal{D}, \mathcal{D}') \triangleq 2\sup_{h \in \mathcal{H}} \vert P_{\mathcal{D}}(I(h))-P_{\mathcal{D}'}(I(h)) \vert.
 \end{equation}
-Hence, the $\mathcal{H}$-divergence can be seen as one special kind of the $\mathcal{A}$-distance focusing on domain subsets whose characteristic functions are those hypotheses $h \in \mathcal{H}$.
+Hence, the $\mathcal{H}$-divergence can be seen as one special kind of the $\mathcal{A}$-distance focusing on measurable subsets whose characteristic functions are those hypotheses $h \in \mathcal{H}$.
 
-The $\mathcal{H}$-divergence addresses both limitations associated with the total variations. First, it is in general smaller and less sensitive than the total variation distance as long as $\mathcal{H}$ has finite VC dimension. Second, it can be estimated from finite samples drawn from the two distributions, as showed in the following lemma given in \cite{BenDavid2006}.
+The $\mathcal{H}$-divergence addresses both limitations associated with the total variations. First, it is in general smaller and less sensitive than the total variation distance as long as $\mathcal{H}$ has finite VC dimension. Second, it can be easily estimated from finite samples drawn from the two distributions. To see this, given two finite samples $\mathcal{U}$ and $\mathcal{U}'$ according to some distributions over $\mathcal{X}$, the empirical version of the $\mathcal{H}$-divergence is defined as
+\begin{align}
+  \hat{d}_{\mathcal{H}}(\mathcal{U}, \mathcal{U}')
+  \triangleq & 2\sup_{h \in \mathcal{H}} \abs{\hat{P}_{\mathcal{U}}(I(h)) - \hat{P}_{\mathcal{U}'}(I(h))} \label{eq:emp_h_divergence_1}\\
+  =& 2\sup_{h \in \mathcal{H}} \abs{\frac{\abs{\{X: X \in \mathcal{U}, h(X)=1\}}}{\abs{\mathcal{U}}}-\frac{\abs{\{X: X \in \mathcal{U'}, h(X)=1\}}}{\abs{\mathcal{U}'}}}, \label{eq:emp_h_divergence_2}
+\end{align}
+where $\hat{P}$ denotes the empirical probability.
 
-\begin{lemma}\label{lem:emp_h_divergence}
-  For a symmetric hypothesis set $\mathcal{H}$ (one where for every $h \in \mathcal{H}$, the inverse hypothsis $1-h$ is also in $\mathcal{H}$) and samples $\mathcal{U}$ and $\mathcal{U}'$ drawn i.i.d. of size $m$ from two distributions $\mathcal{D}$ and $\mathcal{D}'$, respectively. We have
-  \begin{equation}\label{eq:emp_h_divergence}
-    \hat{d}_{\mathcal{H}}(\mathcal{U}, \mathcal{U}')=2 \left( 1-\min_{h \in \mathcal{H}} \left[ \frac{1}{m} \sum_{\mathbf{x}:h(\mathbf{x})=1}I[\mathbf{x} \in \mathcal{U}]+\frac{1}{m} \sum_{\mathbf{x}:h(\mathbf{x})=0}I[\mathbf{x} \in \mathcal{U}'] \right] \right),
+The next lemma given in \cite{BenDavid2010} shows that we can compute the empirical $\mathcal{H}$-divergence by finding a classifier which attempts to separate one distribution from the another.
+
+\begin{lemma}\label{lem:emp_h_divergence_I}
+  For a symmetric hypothesis set $\mathcal{H}$ and samples $\mathcal{U}$ and $\mathcal{U}'$ of size $m$ drawn i.i.d. from two distributions $\mathcal{D}$ and $\mathcal{D}'$, respectively. We have
+  \begin{equation}\label{eq:emp_h_divergence_I}
+    \hat{d}_{\mathcal{H}}(\mathcal{U}, \mathcal{U}')=2 \left( 1-\min_{h \in \mathcal{H}} \left[ \frac{1}{m} \sum_{X:h(X)=1}I[X \in \mathcal{U}]+\frac{1}{m} \sum_{X:h(X)=0}I[X \in \mathcal{U}'] \right] \right),
   \end{equation}
   where $I[.]$ is the binary indicator variable which is $1$ if the statement is true.
 \end{lemma}
 \begin{proof}
   For any hypothesis $h \in \mathcal{H}$ and the corresponding subset $I(h)$ that contains all positively labeled instances, we have
-  \begin{equation}\label{eq:emp_h_divergence_pf}
-    1 - \left[ \frac{1}{m} \sum_{\mathbf{x}:h(\mathbf{x})=1}I[\mathbf{x} \in \mathcal{U}]+\frac{1}{m} \sum_{\mathbf{x}:h(\mathbf{x})=0}I[\mathbf{x} \in \mathcal{U}'] \right]
-    =
-    P_{\mathcal{U}}(I(h))-P_{\mathcal{U}'}(I(h)).
-  \end{equation}
-  The absolute value in the statement of the lemma follows from the symmetry of $\mathcal{H}$.
+  \begin{align}
+    1 - \left[ \frac{1}{m} \sum_{X:h(X)=1}I[X \in \mathcal{U}]+\frac{1}{m} \sum_{X:h(X)=0}I[X \in \mathcal{U}'] \right]
+    =& 1 - \sum_{X:h(X)=0} \frac{I[X \in \mathcal{U}']}{m} - \sum_{X:h(X)=1} \frac{I[X \in \mathcal{U}]}{m} \label{eq:emp_h_divergence_I_pf_1}\\
+    =& \sum_{X:h(X)=1} \frac{I[X \in \mathcal{U}']}{m} - \sum_{X:h(X)=1} \frac{I[X \in \mathcal{U}]}{m} \label{eq:emp_h_divergence_I_pf_2}\\
+    =& \hat{P}_{\mathcal{U}}(I(h)) - \hat{P}_{\mathcal{U}'}(I(h)). \label{eq:emp_h_divergence_I_pf_3}
+  \end{align}
+  The absolute value in the statement follows from the fact that $\mathcal{H}$ is symmetric.
 \end{proof}
 
-This lemma suggests that, instead of computing the empirical $\mathcal{H}$-divergence directly by taking the supremum over $\mathcal{H}$, which is generally difficult, we can try to find a hypothesis $h \in \mathcal{H}$ which has minimum error for the binary classification problem of distinguishing the two domains. To do so, we can label all the source samples by $0$ and all the target samples by $1$, and then use the risk of the binary classier trained on the combination of source and target samples to approximate the "$\min$" part of (\ref{eq:emp_h_divergence}) in Lemma \ref{lem:emp_h_divergence}.
+Lemma \ref{lem:emp_h_divergence_I} suggests that, instead of computing the empirical $\mathcal{H}$-divergence directly by taking the supremum over $\mathcal{H}$, which is generally difficult, we can try to find a hypothesis $h \in \mathcal{H}$ which has minimum error for the binary classification problem of distinguishing the two domains. To do so, we can label all the source samples by $0$ and all the target samples by $1$, and then use the risk of the binary classifier trained on the combination of source and target samples to approximate the "$\min$" part of (\ref{eq:emp_h_divergence_I}) in Lemma \ref{lem:emp_h_divergence_I}.
 
 \subsection{$\HDH$-divergence}
-Finally, the idea of $\mathcal{H}$-divergence can be extended to the \textit{symmetric difference hypothesis space} defined as $\HDH \triangleq \{ h(\mathbf{x}) \text{ XOR } h'(\mathbf{x}) \vert h, h' \in \mathcal{H} \}$, which leads to the difinition of the $\HDH$-divergence as
+Finally, since we consider symmetric hypothesis set, the idea of $\mathcal{H}$-divergence can be extended to the \textit{symmetric difference hypothesis space} defined as $\HDH \triangleq \{ h(X) \text{ XOR } h'(X) \vert h, h' \in \mathcal{H} \}$, which leads to the difinition of the $\HDH$-divergence as
 \begin{equation}\label{eq:hdh_divergence}
   \DHDH(\mathcal{D}, \mathcal{D}') \triangleq 2\sup_{h \in \HDH} \vert P_{\mathcal{D}}(I(h))-P_{\mathcal{D}'}(I(h)) \vert.
 \end{equation}
 Note that the $\HDH$-divergence can also be written as
 \begin{equation}\label{eq:hdh_divergence2}
-  2\sup_{h, h' \in \mathcal{H}} \vert P_{\mathcal{D}}(h(\mathbf{x}) \neq h'(\mathbf{x}))-P_{\mathcal{D}'}(h(\mathbf{x}) \neq h'(\mathbf{x})) \vert,
+  2\sup_{h, h' \in \mathcal{H}} \vert P_{\mathcal{D}}(h(X) \neq h'(X))-P_{\mathcal{D}'}(h(X) \neq h'(X)) \vert,
 \end{equation}
 which measures the largest possible difference between the two probability distributions when considering all possible \textit{disagreement} events induced by hypotheses $h,h' \in \mathcal{H}$.
 
 % \subsection{Empirical $\mathcal{H}$-divergence}
 
-(Toy example for $\mathcal{X}$, $\mathcal{H}$, $\mathcal{H}$-divergence, $\HDH$-divergence, the empirical $\mathcal{H}$-divergence, and the lemma about the calculation of the empirical $\mathcal{H}$-divergence)
+% (Toy example for $\mathcal{X}$, $\mathcal{H}$, $\mathcal{H}$-divergence, $\HDH$-divergence, the empirical $\mathcal{H}$-divergence, and the lemma about the calculation of the empirical $\mathcal{H}$-divergence)
