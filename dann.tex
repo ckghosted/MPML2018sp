@@ -1,7 +1,7 @@
 \section{Empirical Results}
 In this section, we introduce the domain-adversarial neural network (DANN) proposed by Ganin et al. \cite{Ganin2016}, \cite{Ganin2015} and Ajakan et al. \cite{Ajakan2014}.
 
-\subsection{Model Architecture}
+\subsection{Model Architecture}\label{sub:model_arch}
 \begin{figure}
   \centering
   \input{figures/dann-arch.tikz}
@@ -11,44 +11,70 @@ In this section, we introduce the domain-adversarial neural network (DANN) propo
 
 The high-level architecture of DANN consists of three components: the feature extractor $G_f$; the label classifier $G_y$; and the domain classifier $G_d$, as shown in Figure \ref{fig:dann_arch}. We use $\theta_f$, $\theta_y$, and $\theta_d$, respectively, to denote the set of parameters of each compunent.
 
-As can be seen from Figure \ref{fig:dann_arch} the feature extractor $G_f$ takes the role of the representation function $\mathcal{R}$, which transforms the input data from the domain space $\mathcal{X}$ into a feature space, say, $\mathcal{Z}$. Hence, at the output of the feature extractor, we will get two distributions $\tDS$ and $\tDT$ over $\mathcal{Z}$, each of which induced from $\DS$ and $\DT$ over $\mathcal{X}$, respectively. The label classifier $G_y$ and the domain classifier $G_d$ then take the transformed data $\mathbf{z}=G_f(\mathbf{x};\theta_f)$ as input. Intuitively, a good representation must be discriminative for $G_y$ with respect to the main learning task on the source domain, while at the same time be indiscriminate for $G_d$ with respect to the shift between the source and target domains. If it is the case, we then have more condifence to say that, if $G_y$ can be trained on the source domain to do well on $\tDS$, then it should also do well on $\tDT$.
+As can be seen from Figure \ref{fig:dann_arch}, the feature extractor $G_f$ takes the role of the representation function $\mathcal{R}$, which transforms the input data from the domain space $\mathcal{X}$ into a feature space, say, $\mathcal{Z}$. Hence, at the output of the feature extractor, we will get two distributions $\tDS$ and $\tDT$ over $\mathcal{Z}$, each of which induced from $\DS$ and $\DT$ over $\mathcal{X}$, respectively. The label classifier $G_y$ and the domain classifier $G_d$ then take the transformed data $\mathbf{z}=G_f(\mathbf{x};\theta_f)$ as their input. Intuitively, a good representation must be discriminative for $G_y$ with respect to the main learning task on the source domain, while at the same time be indiscriminative for $G_d$ with respect to the shift between the source and target domains. If it is the case, we then have more condifence to say that: If $G_y$ can be trained on the source domain to do well on $\tDS$, then it should also do well on $\tDT$.
 
 \subsection{Loss and Objective Functions}
 Without loss of generality, consider the neural network with the single layer setting. (parameters, loss functions, the objective function, ...)
 
 Let the loss functions of the label classifier $G_y$ and the domain classifier $G_d$ be denoted by
 \begin{equation}\label{eq:loss_y}
-  L_y(X, Y; \theta_f, \theta_y) = l(G_y(G_f(X; \theta_f); \theta_y), Y)
+  L_y(X, Y; \theta_f, \theta_y) \triangleq \ell (G_y(G_f(X; \theta_f); \theta_y), Y)
 \end{equation}
 and
 \begin{equation}\label{eq:loss_d}
-  L_d(X, D; \theta_f, \theta_d) = l(G_y(G_f(X; \theta_f); \theta_d), D),
+  L_d(X, D; \theta_f, \theta_d) \triangleq \ell (G_d(G_f(X; \theta_f); \theta_d), D),
 \end{equation}
-respectively. According to the intuition about a good representation mentioned earlier, the model must be trained to minimize $L_y(X, Y; \theta_f, \theta_y)$, and at the same time to maximize $L_d(X, D; \theta_f, \theta_d)$. Training DANN is thus equivalent to optimizing the objective function
+respectively. According to the intuition about a good representation mentioned in Section \ref{sub:model_arch}, the model must be trained to minimize $L_y(X, Y; \theta_f, \theta_y)$, and at the same time maximize $L_d(X, D; \theta_f, \theta_d)$. Training DANN is thus equivalent to optimizing the objective function
 \begin{equation}\label{eq:obj}
   \begin{aligned}
     E(\theta_f, \theta_y, \theta_d)
-    =& \underbrace{\frac{1}{n} \sum_{i=1}^{n}  L_y(X_i, Y_i; \theta_f, \theta_y)}
+    =& \underbrace{\frac{1}{n} \sum_{i=1}^{n} L_y(X_i, Y_i; \theta_f, \theta_y)}
        _{\text{label loss}} \\
      & - \lambda \underbrace{(
        \frac{1}{n} \sum_{i=1}^{n} L_d(X_i, S; \theta_f, \theta_d)
-       + \frac{1}{n'} \sum_{i=n+1}^{n + n'} L_d(X_i, T; \theta_f, \theta_{d}))}
+       + \frac{1}{n'} \sum_{i=n+1}^{n + n'} L_d(X_i, T; \theta_f, \theta_d))}
        _{\text{domain loss}}
   \end{aligned}
 \end{equation}
 by finding the \textit{saddle} point $\hat{\theta}_f$, $\hat{\theta}_y$, and $\hat{\theta}_d$ such that
 \begin{align}
-  (\hat{\theta}_f, \hat{\theta}_y) = & \argmin_{\theta_f, \theta_y} E(\theta_f, \theta_y, \hat{\theta}_d), \label{eq:opt_argmin}\\
-  \hat{\theta}_d = & \argmax_{\theta_d} E(\hat{\theta}_f, \hat{\theta}_y, \theta_d). \label{eq:opt_argmax}
+  (\hat{\theta}_f, \hat{\theta}_y) = & \argmin_{\theta_f, \theta_y} E(\theta_f, \theta_y, \hat{\theta}_d), \label{eq:obj_argmin}\\
+  \hat{\theta}_d = & \argmax_{\theta_d} E(\hat{\theta}_f, \hat{\theta}_y, \theta_d). \label{eq:obj_argmax}
 \end{align}
 
-In other words, the domain classifier and the feature extractor are trained \textit{adversarially} againest each other, in a way that is similar in the minimax game between generator and discriminator in the generative adversarial network (GAN) frameworks.
+In other words, the feature extractor $G_f$ and the label classifier $G_y$ are trained to minimize the objective function by updating $\theta_f$ and $\theta_y$, while the domain classifier $G_d$ is trained to maximize it by updating $\theta_d$. Note that the domain classifier and the feature extractor are trained \textit{adversarially} against each other, in a way that is similar to the minimax game between generator and discriminator in the generative adversarial network (GAN) frameworks, which suggest the name of DANN.
 
 % At training time, in order to get discriminative representations for the label classification task, we seek to minimize the loss of the label predictor $G_y$ by updating $\theta_f$ and $\theta_y$.
 % On the other hand, we also want indiscriminative representations for the domain classification task. In order to get a good \textit{proxy} to the loss of the domain classifier.
 
 \subsection{Interpretation}
-How does optimizing the objective function (\ref{eq:obj}) relate to minimizing the theoretical bound? We will show that minimizing (\ref{eq:obj}) with respective to $\theta_f$ and $\theta_y$ is equivalent to minimize the first term and the third term in (\ref{eq:B}) of Corollary \ref{thm:B}.
+How does optimizing the objective function (\ref{eq:obj}) relate to minimizing the theoretical bound? We will show that minimizing (\ref{eq:obj}) with respective to $\theta_f$ and $\theta_y$ is equivalent to minimize the first term and the third term in (\ref{eq:B}) of Corollary \ref{thm:B}. To recap, we can reformulate (\ref{eq:B}) as
+\begin{equation}
+  \RiskT(h) \leq \ERiskS(h) + \frac{1}{2} \EDHDH(\US, \UT) + C,
+\end{equation}
+where $C$ is the aggregated term related to number of samples and the hypothesis set. Clearly, $\ERiskS(h)$ is equivalent to the \textit{label loss} in (\ref{eq:obj}): $\frac{1}{n} \sum_{i=1}^{n} L_y(X_i, Y_i; \theta_f, \theta_y)$. It then sufficient to relate $\EDHDH(\US, \UT)$ to the \textit{domain loss} in (\ref{eq:obj}), denoted by
+
+\begin{align}
+\hat{L}_{d}(X, D; \theta_f, \theta_d) \triangleq &
+\frac{1}{n} \sum_{i=1}^{n} L_d(X_i, S; \theta_f, \theta_d)
++
+\frac{1}{n'} \sum_{i=n+1}^{n + n'} L_d(X_i, T; \theta_f, \theta_d) \label{eq:domain_loss}\\
+= & \frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=1}I[\mathbf{z} \in \TUS]+\frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=0}I[\mathbf{z} \in \TUT], \label{eq:domain_loss_I}
+\end{align}
+where in (\ref{eq:domain_loss_I}) we have assumed that the unlabeled datasets have size $\abs{\TUS}=\abs{\TUT}=m$, and the source samples have domain labels $S=0$ while the target samples have domain labels $T=1$. By noting the minus sign before the domain loss in (\ref{eq:obj}), it can be seen that the maximizer $\hat{\theta}_d$ for (\ref{eq:obj_argmax}) is actually the minimizer for $\hat{L}_{d}(X, D; \theta_f, \theta_d)$. Hence, we have
+\begin{align}
+\hat{\theta}_d
+= & \argmin_{\theta_d} \hat{L}_{d}(X, D; \theta_f, \theta_d) \label{eq:argmin_theta_d}\\
+= & \argmin_{\theta_d} \left[ \frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=1}I[\mathbf{z} \in \TUS]+\frac{1}{m} \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=0}I[\mathbf{z} \in \TUT] \right]. \label{eq:argmin_theta_d_I}
+\end{align}
+Also, the minimizer $\hat{\theta}_f$ for (\ref{eq:obj_argmin}) is actually the maximizer for $\hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)$, for a fixed $\hat{\theta}_d$. We thus have
+\begin{align}
+\max_{\theta_f}{\hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)}
+=& \min_{\theta_f}{- \hat{L}_{d}(X, D; \theta_f, \hat{\theta}_d)} \label{eq:min_theta_f}\\
+=& \min_{\theta_f} 2 \left( 1 - \frac{1}{m} \min_{\theta_d} \left[ \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=1}I[\mathbf{z} \in \TUS]+ \sum_{\mathbf{z}:G_d(\mathbf{z};\theta_d)=0}I[\mathbf{z} \in \TUT] \right] \right) \label{eq:min_theta_f_I}\\
+=& \argmin_{\theta_f} \hat{d}_{\mathcal{H}_d}(\TUS, \TUT) \label{eq:min_theta_f_EDHDH},
+\end{align}
+where (\ref{eq:min_theta_f_I}) is by (\ref{eq:argmin_theta_d_I}), and (\ref{eq:min_theta_f_EDHDH}) is by Lemma \ref{lem:emp_h_divergence} with $\mathcal{H}_d$ being the hypothesis set for the domain classifier $G_d$.
 
 (R(W;b) ...)
 
